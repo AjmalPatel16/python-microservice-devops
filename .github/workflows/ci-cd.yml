@@ -1,0 +1,33 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Backend
+        run: |
+          docker build -t ajmalpatel/python-backend:latest ./backend
+          docker push ajmalpatel/python-backend:latest
+
+      - name: Build and push Frontend
+        run: |
+          docker build -t ajmalpatel/python-frontend:latest ./frontend
+          docker push ajmalpatel/python-frontend:latest
+
+      - name: Build and push Logger
+        run: |
+          docker build -t ajmalpatel/python-logger:latest ./logger
+          docker push ajmalpatel/python-logger:latest
