@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  backend:
+    image: ajmalpatel/python-backend:latest
+    restart: always
+    depends_on:
+      - db
+  frontend:
+    image: ajmalpatel/python-frontend:latest
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+  db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: appdb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  logger:
+    image: ajmalpatel/python-logger:latest
+    restart: always
+    volumes:
+      - app_logs:/var/log/app
+volumes:
+  postgres_data:
+  app_logs:
